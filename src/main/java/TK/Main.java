@@ -2,7 +2,8 @@ package TK;
 
 public class Main {
     public static void main(String[] args) {
-    // list current tasks
+    Task newTask = new Task("I am a Task");
+    System.out.print(newTask.toString());
 
     }
 }
