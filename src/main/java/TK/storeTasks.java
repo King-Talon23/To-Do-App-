@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class storeTasks {
-    public static void storeTasks(Task[] array, String filePath) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+    public static void storeTasks(Task[] array) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("StoredTasks.txt"))) {
             for (int i = 0; i < array.length; i++) {
                 writer.write(array[i].toString());
                 if (i < array.length - 1) {
@@ -15,29 +15,28 @@ public class storeTasks {
                 }
             }
             writer.newLine();
-            System.out.println("Array written to text file: " + filePath);
+            System.out.println("Tasks Saved.");
         } catch (IOException e) {
-            System.err.println("Error writing array to text file: " + e.getMessage());
+            System.err.println("Error writing array to file: " + e.getMessage());
         }
     }
 
     public static List<Task> loadTasks() throws IOException {
-        List<Task> Tasks = new ArrayList<>();
-
-
+        List<Task> tasks = new ArrayList<>();
         BufferedReader bf = new BufferedReader(new FileReader("StoredTasks.txt"));
-        String line = bf.readLine();
 
-        while (line != null) { // checking for last line
-            String[] splitTasks = bf.readLine().split(":");
-            if (Objects.equals(splitTasks[1], "true")) {
-                Tasks.add(new Task(splitTasks[1], true));
-            } else {
-                Tasks.add(new Task(splitTasks[1], false));
+        String line;
+        while ((line = bf.readLine()) != null) {
+            String[] splitTasks = line.split(":");
+            if (splitTasks.length == 2) {
+                String name = splitTasks[1].trim();
+                boolean completed = Boolean.parseBoolean(splitTasks[0].trim());
+                tasks.add(new Task(name, completed));
             }
         }
+
         bf.close();
-        return Tasks;
+        return tasks;
     }
 
 

@@ -1,9 +1,12 @@
 package TK;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class Main {
-    public static void main(String[] args) {
-    Task newTask = new Task("I am a Task");
-    System.out.print(newTask.toString());
+    public static void main(String[] args) throws IOException {
+        System.out.print(storeTasks.loadTasks());
+
 
     }
 }
