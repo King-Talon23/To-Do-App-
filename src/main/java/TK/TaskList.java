@@ -7,12 +7,15 @@ import static TK.utility.*;
 
 public class TaskList {
     List<Task> currentTasks;
+    Boolean anyComplete;
 
     public TaskList() throws IOException {
         this.currentTasks = utility.loadTasks();
+        this.anyComplete = anyComplete();
     }
 
-    private void add() {
+
+    public void add() {
         print("Please enter a description of your new task!");
         List<Task> newTaskList = this.currentTasks;
         Task newTask = new Task(getStringInput(), false);
@@ -37,7 +40,7 @@ public class TaskList {
                 case 1: {
                     print("Enter a new task Description:");
                     task.description = getStringInput();
-                    print("Description Changed Sucessfully!");
+                    print("Description Changed Successfully!");
                 }
                 case 2: {
                     if (task.isComplete) {
@@ -95,9 +98,18 @@ public class TaskList {
     }
 
 
-    private void displayTasks() {
+    public void displayTasks() {
         for (Task task : currentTasks) {
-            print(currentTasks.indexOf(task) + ". " + task);
+            print((currentTasks.indexOf(task) + 1) + ". " + task);
         }
+    }
+
+    private boolean anyComplete(){
+        for (Task task : this.currentTasks) {
+            if (task.isComplete) {
+                return true;
+            }
+        }
+        return false;
     }
 }

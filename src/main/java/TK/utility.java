@@ -9,7 +9,7 @@ public class utility {
     public static void storeTasks(List<Task> array) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("StoredTasks.txt"))) {
             for (int i = 0; i < array.size(); i++) {
-                writer.write(String.valueOf(array.get(i)).replace(" ", ""));
+                writer.write(String.valueOf(array.get(i)));
                 if (i < array.size() - 1) {
                     writer.write("\n");
                 }
@@ -31,8 +31,11 @@ public class utility {
             String[] splitTasks = line.split(":");
             if (splitTasks.length == 2) {
                 String name = splitTasks[1].trim();
-                boolean completed = Boolean.parseBoolean(splitTasks[0].trim());
-                tasks.add(new Task(name, completed));
+                if (splitTasks[0].trim().equals("{X}")) {
+                    tasks.add(new Task(name, true));
+                } else {
+                    tasks.add(new Task(name, false));
+                }
             }
         }
         bf.close();
