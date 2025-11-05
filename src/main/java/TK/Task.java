@@ -7,9 +7,9 @@ public class Task {
     // Map completion state to visual status symbol for display
     Map<Boolean, String> completeToStatus = new HashMap<>(Map.of(false, "[]", true, "{X}"));
 
-    String status;
-    boolean isComplete;
-    String description;
+    public String status;
+    public boolean isComplete;
+    public String description;
 
     public Task(String description, boolean isComplete) {
         // initialize task properties and visual status
