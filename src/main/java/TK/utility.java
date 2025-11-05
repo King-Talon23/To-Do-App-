@@ -7,8 +7,8 @@ import java.util.Scanner;
 
 public class utility {
     // Track which border style and section are currently being used for display
-    static int borderSegment = 0;
-    static int segmentSection = 0;
+    public static int borderSegment = 0;
+    public static int segmentSection = 0;
 
     // Constants for spacing and alignment of borders and text
     static int BORDER_CENTER_AMOUNT = 18;

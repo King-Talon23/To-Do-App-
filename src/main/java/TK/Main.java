@@ -7,8 +7,8 @@ import java.util.Map;
 import static TK.utility.*;
 
 public class Main {
-    static boolean running = true;
-    static TaskList tasklist;
+    public static boolean running = true;
+    public static TaskList tasklist;
 
     static {
         try {
