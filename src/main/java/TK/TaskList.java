@@ -6,7 +6,7 @@ import java.util.List;
 import static TK.utility.*;
 
 public class TaskList {
-    List<Task> currentTasks;
+    public List<Task> currentTasks;
 
     public TaskList() throws IOException {
         // load existing tasks on startup
