@@ -6,76 +6,172 @@ import java.util.List;
 import java.util.Scanner;
 
 public class utility {
-    public static void storeTasks(List<Task> array) {
+    // Track which border style and section are currently being used for display
+    static int borderSegment = 0;
+    static int segmentSection = 0;
+
+    // Constants for spacing and alignment of borders and text
+    static int BORDER_CENTER_AMOUNT = 18;
+    static int BORDER_TEXT_CENTER = 100;
+    static int BORDERLESS_TEXT_CENTER = 136;
+
+    // border patterns used for In-Terminal UI
+    static String[][] border = {
+            {"/\\/\\", "/\\--/\\", "<|(>  <)|>", "\\/--\\/", "\\/\\/"},
+            {"/  \\", "/ /\\ \\", "\\ \\/ /", "\\  /", "//\\\\"},
+            {"/  \\", "/ /\\ \\", "(  ()  )", "\\ \\/ /", "\\  /"},
+            {"\\\\//", "/  \\", "/ /\\ \\", " \\ \\/ /", "\\  /"}
+    };
+
+
+    // file saving and loading
+    public static void storeTasks(List<Task> tasklist) {
+        // Writes a list of tasks to a text file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("StoredTasks.txt"))) {
-            for (int i = 0; i < array.size(); i++) {
-                writer.write(String.valueOf(array.get(i)));
-                if (i < array.size() - 1) {
-                    writer.write("\n");
+            for (int i = 0; i < tasklist.size(); i++) {
+                writer.write(tasklist.get(i).toString());
+                if (i < (tasklist.size() - 1)) {
+                    writer.newLine();
                 }
             }
             writer.newLine();
-            System.out.println("Tasks Saved.");
         } catch (IOException e) {
             System.err.println("Error writing array to file: " + e.getMessage());
         }
     }
 
     public static List<Task> loadTasks() throws IOException {
-        // reads all lines from file and converts them back from String to Task
+        // Loads tasks from file and reconstructs the list of Task objects
         List<Task> tasks = new ArrayList<>();
         BufferedReader bf = new BufferedReader(new FileReader("StoredTasks.txt"));
         String line;
 
-        while ((line = bf.readLine()) != null) { // avoids last line
-            String[] splitTasks = line.split(":");
+        while ((line = bf.readLine()) != null) {
+            String[] splitTasks = line.split(": ");
             if (splitTasks.length == 2) {
                 String name = splitTasks[1].trim();
-                if (splitTasks[0].trim().equals("{X}")) {
-                    tasks.add(new Task(name, true));
-                } else {
-                    tasks.add(new Task(name, false));
-                }
+                tasks.add(new Task(name, splitTasks[0].trim().equals("{X}")));
             }
         }
         bf.close();
         return tasks;
     }
 
+    // Input handliing
     public static int getIntInput(int max) {
-        List<Integer> allowedNums = new ArrayList<>();
-        for (int i=1; i > max; i++) {
-            allowedNums.add(i);
-        }
-        allowedNums.add(99);
-        int input = 0;
+        // requires the user enter an integer within the allowed range
+        List<Integer> allowedNums = new ArrayList<>(List.of(99));
+        for (int i = 1; i <= max; i++) allowedNums.add(i);
+
         Scanner sc = new Scanner(System.in);
+        int input;
         do {
+            System.out.print("> ");
+            while (!sc.hasNextInt()) {
+                System.out.print("Enter a number: ");
+                sc.next();
+            }
             input = sc.nextInt();
-        } while (allowedNums.contains(input));
-
+        } while (!allowedNums.contains(input));
         return input;
-
     }
+
     public static String getStringInput() {
-        String input = "";
+        // Ensures user enters a non-empty string
         Scanner sc = new Scanner(System.in);
+        String input;
         do {
-            input = sc.nextLine();
+            System.out.print("> ");
+            input = sc.nextLine().trim();
         } while (input.isEmpty());
-
         return input;
     }
 
-    public static void print(String text) {
-        String space = " ";
-        int spacingAmount = 100 - text.length();
-        if (spacingAmount / 2 != 0) {
-            spacingAmount += 1;
-        }
-        String spaceString = space.repeat(spacingAmount / 2);
-        System.out.print("|" + spaceString + text + spaceString + "|\n");
-
+    // Printing / UI STUFF
+    public static void printTop(){
+        // prints the top/begining part of the UI border
+        String sectionOne = centerText("/\\", BORDER_CENTER_AMOUNT);
+        String sectionTwo = centerText("\\  /", BORDER_CENTER_AMOUNT);
+        System.out.println(sectionOne + centerText("", BORDER_TEXT_CENTER) + sectionOne);
+        System.out.println(sectionTwo + centerText("", BORDER_TEXT_CENTER) + sectionTwo);
+        printFull();
+    }
+    public static void printBottom(){
+        // prints the bottom/end part of the UI border
+        printFull();
+        String sectionOne = centerText("/  \\", BORDER_CENTER_AMOUNT);
+        String sectionTwo = centerText("\\/", BORDER_CENTER_AMOUNT);
+        System.out.println(sectionOne + centerText("", BORDER_TEXT_CENTER) + sectionOne);
+        System.out.println(sectionTwo + centerText("", BORDER_TEXT_CENTER) + sectionTwo);
     }
 
+
+
+
+    public static void printBordered(String text) {
+        // Prints text with decorative borders on both sides
+        delay(150);
+        String borderPart = centerText(border[borderSegment][segmentSection], BORDER_CENTER_AMOUNT);
+        String centeredText = centerText(text, BORDER_TEXT_CENTER);
+        System.out.println(borderPart + centeredText + borderPart);
+        advanceBorder();
+    }
+
+    public static void printEmptyBorder() {
+        // Prints only borders without any text
+        delay(150);
+        String borderPart = centerText(border[borderSegment][segmentSection], BORDER_CENTER_AMOUNT);
+        String centeredText = centerText("", BORDER_TEXT_CENTER);
+        System.out.println(borderPart + centeredText + borderPart);
+        advanceBorder();
+    }
+
+    public static void printBorderless(String text) {
+        // Prints text centered with no border around it
+        delay(150);
+        String centeredText = centerText(text, BORDERLESS_TEXT_CENTER);
+        System.out.println(centeredText);
+    }
+
+    public static void printFull() {
+        // Prints a full line border with decorative patterns
+        String borderPart = centerText(border[borderSegment][segmentSection], BORDER_CENTER_AMOUNT);
+        String line = "=".repeat(BORDER_TEXT_CENTER);
+        System.out.println(borderPart + centerText(line, BORDER_TEXT_CENTER) + borderPart);
+        advanceBorder();
+    }
+
+    private static String centerText(String text, int maxWidth) {
+        // Centers the given text within a specified width by padding spaces
+        int padding = (maxWidth - text.length()) / 2;
+        StringBuilder centeredText = new StringBuilder();
+        centeredText.append(" ".repeat(Math.max(0, padding)));
+        centeredText.append(text);
+        while (centeredText.length() < maxWidth) {
+            // fill the rest of the space to match the maxWidth
+            centeredText.append(" ");
+        }
+        return centeredText.toString();
+    }
+
+
+    private static void advanceBorder() {
+        // advances to next border pattern section
+        segmentSection++;
+        if (segmentSection > 4) {
+            segmentSection = 0;
+            borderSegment++;
+            if (borderSegment > 3) borderSegment = 0;
+        }
+    }
+
+    private static void delay(int milliseconds) {
+        // creates a brief delay a smooth ui expirence
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
 }
+

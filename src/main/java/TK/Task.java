@@ -1,36 +1,40 @@
 package TK;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Task {
-    String status = "";
-    boolean isComplete = false;
-    String description = "";
+    // Map completion state to visual status symbol for display
+    Map<Boolean, String> completeToStatus = new HashMap<>(Map.of(false, "[]", true, "{X}"));
+
+    String status;
+    boolean isComplete;
+    String description;
+
     public Task(String description, boolean isComplete) {
-        this.status = "[]"; // always starts unmarked
-        this.description = description;
+        // initialize task properties and visual status
         this.isComplete = isComplete;
-        if (isComplete) {
-            complete();
-        }
+        this.status = completeToStatus.get(this.isComplete);
+        this.description = description;
     }
 
     public void complete() {
-        this.status = "{X}";
+        // mark task as complete
         this.isComplete = true;
-    }
-    public void decomplete() {
-        this.status = "[]";
-        this.isComplete = false;
+        this.status = completeToStatus.get(true);
+
     }
 
+    public void decomplete() {
+        // unmark task to uncomplete
+        this.isComplete = false;
+        this.status = completeToStatus.get(false);
+
+    }
 
     @Override
     public String toString() {
         return status + ": " + description;
     }
-
-
-
-
 }
+

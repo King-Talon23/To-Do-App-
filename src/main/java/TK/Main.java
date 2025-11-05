@@ -1,57 +1,61 @@
 package TK;
 
 import java.io.IOException;
-import java.util.List;
-import static TK.utility.getIntInput;
-import static TK.utility.print;
+import java.util.HashMap;
+import java.util.Map;
+
+import static TK.utility.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        boolean running = true;
-        TaskList tasklist = new TaskList();
-        int maxInput = 3;
-        if (tasklist.anyComplete) {
-            maxInput += 1; // remove completed tasks
+    static boolean running = true;
+    static TaskList tasklist;
+
+    static {
+        try {
+            tasklist = new TaskList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        print("Welcome back, here's your tasks.");
-        tasklist.displayTasks();
+    }
+
+    public static void main(String[] args) {
+        int maxInput = 3; // add/edit/delete
+
+        // map all possible user input to actions
+        Map<Integer, Runnable> inputMap = new HashMap<>(Map.of(
+                1, tasklist::add,
+                2, tasklist::edit,
+                3, tasklist::delete,
+                4, tasklist::removeCompleted,
+                99, Main::exit));
+        printTop();
+        printBordered("Welcome back, here's your tasks.");
+        printEmptyBorder();
+
         while (running) {
-            print("What would you like to do?");
-            print("1. Add");
-            print("2. Edit");
-            print("3. Delete");
-            if (tasklist.anyComplete) {
-                print("4. Remove Completed Tasks");
+            tasklist.displayTasks();
+            printBordered("What would you like to do?");
+            printBordered("1. Add a Task");
+            printBordered("2. Edit/Complete a Task");
+            printBordered("3. Delete a Task");
+
+            if (tasklist.anyComplete()) {
+                // if any tasks are completed the option to remove completed tasks
+                maxInput++;
+                printBordered("4. Remove ALL Completed Tasks");
             }
 
+            printBordered("99. Save & Quit");
+            printBottom();
 
-
-
-            switch (getIntInput(maxInput)) {
-                case 1: {
-                    tasklist.add();
-                }
-                case 2: {
-                    tasklist.edit();
-                }
-                case 3: {
-                    tasklist.delete();
-                }
-                case 4: {
-                    tasklist.removeCompleted();
-                }
-                case 99: running = false;
-            }
+            inputMap.get(getIntInput(maxInput)).run(); // run the corresponding function based off user input
         }
-w
     }
 
-    private static void printMainMenu(TaskList tasklist) {
-
+    private static void exit() {
+        running = false;
+        utility.storeTasks(tasklist.currentTasks); // saves current tasks before quitting
+        printBordered("Tasks Saved!");
+        printBordered("Goodbye!");
     }
-
-    private static void mainMenuLogic(TaskList tasklist) {
-
-    }
-
 }
