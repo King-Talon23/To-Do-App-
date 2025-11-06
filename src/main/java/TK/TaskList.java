@@ -14,10 +14,15 @@ public class TaskList {
     }
 
     public boolean anyComplete() {
-        // check for at atleast one completed task
+        // checks for at least one completed task
         return this.currentTasks.stream().anyMatch(x -> x.isComplete);
     }
     public void add() {
+        /*
+         prompts the user to enter a String for a new Task description,
+         creates a uncompleted new task with user input
+         saves changes to file before ending
+         */
         printTop();
         printBordered("Please enter a description of your new task!");
         printBottom();
@@ -30,6 +35,12 @@ public class TaskList {
     }
 
     public void edit() {
+        /*
+         prompts the user to choose a task to edit,
+         further prompts to edit the description or flip the completion status
+         edit description -> set description to next user input
+         flip status -> (uncomplete -> complete || complete -> uncomplete)
+         */
         printTop();
         printBordered("What Task would you like to Edit?");
         displayTasks();
@@ -69,7 +80,11 @@ public class TaskList {
     }
 
     public void delete() {
-        // prompts the user to choose a task to delete,
+        /*
+         prompts the user to choose a task to delete,
+         removes that task from a copy of currentTasks
+         saves the new list over the storedtasks file
+         */
         printTop();
         printBordered("What Task would you like to Delete?");
         displayTasks();
@@ -97,6 +112,11 @@ public class TaskList {
     }
 
     public void removeCompleted() {
+        /*
+         prompts the user if they want to delete all completed tasks,
+         removed all task from a copy of currentTasks where isCompelte is true
+         saves the new list over the storedtasks file
+         */
         printTop();
         printBordered("Are you sure you want to clear ALL Completed Tasks?");
         printBordered("1. Yes");
@@ -119,6 +139,7 @@ public class TaskList {
     }
 
     public void displayTasks() {
+        // Displays all current tasks in a numbers list
         for (Task task : currentTasks) {
             printBordered((this.currentTasks.indexOf(task) + 1) + ". " + task);
         }
