@@ -33,7 +33,7 @@ public class utility {
                 if (i < (tasklist.size() - 1)) { writer.newLine(); }
             }
             writer.newLine();
-        } catch (IOException e) {
+        } catch (IOException e) {1
             System.err.println("Error writing array to file: " + e.getMessage());
         }
     }
@@ -108,7 +108,7 @@ public class utility {
 
 
     public static void printBordered(String text) {
-        // Prints text with decorative borders on both sides
+        // Prints text with borders on both sides
         delay(150);
         String borderPart = centerText(border[borderSegment][segmentSection], BORDER_CENTER_AMOUNT);
         String centeredText = centerText(text, BORDER_TEXT_CENTER);
@@ -117,7 +117,7 @@ public class utility {
     }
 
     public static void printEmptyBorder() {
-        // Prints only borders without any text
+        // prints borders without any text
         delay(150);
         String borderPart = centerText(border[borderSegment][segmentSection], BORDER_CENTER_AMOUNT);
         String centeredText = centerText("", BORDER_TEXT_CENTER);
@@ -126,14 +126,14 @@ public class utility {
     }
 
     public static void printBorderless(String text) {
-        // Prints text centered with no border around it
+        // prints text centered with no border around it
         delay(150);
         String centeredText = centerText(text, BORDERLESS_TEXT_CENTER);
         System.out.println(centeredText);
     }
 
     public static void printFull() {
-        // Prints a full line border with decorative patterns
+        // Prints a line of = inbetween border sections
         String borderPart = centerText(border[borderSegment][segmentSection], BORDER_CENTER_AMOUNT);
         String line = "=".repeat(BORDER_TEXT_CENTER);
         System.out.println(borderPart + centerText(line, BORDER_TEXT_CENTER) + borderPart);
@@ -155,7 +155,7 @@ public class utility {
 
 
     private static void advanceBorder() {
-        // advances to next border pattern section
+        // advances to next border pattern section/segment
         segmentSection++;
         if (segmentSection > 4) {
             segmentSection = 0;
@@ -165,7 +165,7 @@ public class utility {
     }
 
     private static void delay(int milliseconds) {
-        // creates a brief delay a smooth ui expirence
+        // creates a brief delay between prints a smoother looking ui
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
