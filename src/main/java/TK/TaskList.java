@@ -46,7 +46,7 @@ public class TaskList {
         displayTasks();
         printBordered("99. Exit");
         printBottom();
-
+        System.out.print(currentTasks.size());
         int input = getIntInput(currentTasks.size());
         if (input == 99) {
             printBorderless("Exiting Edit Menu...");
@@ -98,8 +98,8 @@ public class TaskList {
             printBordered("1. Yes");
             printBordered("2. No");
             printBottom();
-
-            if (getIntInput(2) == 1) { // else: 2 == exit
+            int confirmation = getIntInput(2);
+            if (confirmation == 1) { // else: 2 == exit
                 List<Task> newTaskList = this.currentTasks;
                 newTaskList.remove(this.currentTasks.get(input - 1));
                 storeTasks(newTaskList);

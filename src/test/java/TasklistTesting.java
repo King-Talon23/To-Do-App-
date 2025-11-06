@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,20 +49,27 @@ public class TasklistTesting {
     }
 
     @Test
-    void testAddAndDelete() {
+    void testDelete() {
         tasklist.currentTasks.clear();
-        String addTask = "I am a new Task\n";
-        System.setIn(new ByteArrayInputStream(addTask.getBytes()));
-        tasklist.add();
-        assertTrue(tasklist.currentTasks.stream() // see if it was added
-                .anyMatch(t -> t.description.equals("I am a new Task")));
+        tasklist.currentTasks.add(new Task("please delete", true));
+        System.setIn(new ByteArrayInputStream("1\n1\n".getBytes()));
+        TK.utility.sc = new Scanner(System.in);
 
-
-        String deleteTask = "1\n1\n";
-        System.setIn(new ByteArrayInputStream(deleteTask.getBytes()));
         tasklist.delete();
 
-        assertTrue(tasklist.currentTasks.isEmpty());
+        assertFalse(tasklist.currentTasks.stream().anyMatch(x -> x.description.equals("please delete")));
     }
+
+    @Test
+    void testAdd() {
+        tasklist.currentTasks.clear();
+
+        String deleteInput = "I AM NEW TASK!!!\n";
+        System.setIn(new ByteArrayInputStream(deleteInput.getBytes()));
+
+        tasklist.add();
+        assertTrue(tasklist.currentTasks.stream().anyMatch(x -> x.description.equals("I AM NEW TASK!!!")));
+    }
+
 }
 

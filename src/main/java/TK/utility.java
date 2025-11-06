@@ -10,6 +10,8 @@ public class utility {
     public static int borderSegment = 0;
     public static int segmentSection = 0;
 
+    public static Scanner sc = new Scanner(System.in);
+
     // constants for spacing of borders and text
     static int BORDER_CENTER_AMOUNT = 18;
     static int BORDER_TEXT_CENTER = 100;
@@ -33,7 +35,7 @@ public class utility {
                 if (i < (tasklist.size() - 1)) { writer.newLine(); }
             }
             writer.newLine();
-        } catch (IOException e) {1
+        } catch (IOException e) {
             System.err.println("Error writing array to file: " + e.getMessage());
         }
     }
@@ -58,11 +60,15 @@ public class utility {
 
     // Input handliing
     public static int getIntInput(int max) {
+        if (max < 1){
+            throw new IllegalArgumentException("Max input must be above 0");
+        }
         // requires the user enter an integer within the allowed range
         List<Integer> allowedNums = new ArrayList<>(List.of(99));
-        for (int i = 1; i <= max; i++) allowedNums.add(i);
+        for (int i = 1; i <= max; i++) {
+            allowedNums.add(i);
+        }
 
-        Scanner sc = new Scanner(System.in);
         int input;
         do {
             System.out.print("> ");
@@ -75,9 +81,9 @@ public class utility {
         return input;
     }
 
+
     public static String getStringInput() {
         // Accepts any non-empty string from the user
-        Scanner sc = new Scanner(System.in);
         String input;
         do {
             System.out.print("> ");
