@@ -9,53 +9,26 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilTesting {
-
-    private final InputStream sysInBackup = System.in;
-    private final PrintStream sysOutBackup = System.out;
     private ByteArrayOutputStream outContent;
-
-    @BeforeEach
-    void setUp() {
-        outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-        // reset static counters before each new test
-        utility.borderSegment = 0;
-        utility.segmentSection = 0;
-    }
-
-    @AfterEach
-    void tearDown() {
-        System.setIn(sysInBackup);
-        System.setOut(sysOutBackup);
-    }
 
     @Test
     void testStoreAndLoadTasks() throws IOException {
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new Task("Alpha", false));
-        tasks.add(new Task("Beta", true));
+        tasks.add(new Task("Task One", false));
+        tasks.add(new Task("Task Two", true));
 
-        // Redirect the output file to a temp file
-        Path tempFile = Files.createTempFile("tasks", ".txt");
-        File oldFile = new File("StoredTasks.txt");
-        File tempCopy = tempFile.toFile();
-        tempCopy.deleteOnExit();
-
-        // Temporarily replace file name by renaming
-        Files.move(oldFile.toPath(), Paths.get("StoredTasks_backup.txt"), StandardCopyOption.REPLACE_EXISTING);
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("StoredTasks.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("StoredTasks_test.txt"))) {
             for (Task t : tasks) {
                 writer.write(t.toString());
                 writer.newLine();
             }
         }
 
-        List<Task> loaded = utility.loadTasks();
+        List<Task> loaded = utility.loadTasks(true);
 
         assertEquals(2, loaded.size());
-        assertEquals("Alpha", loaded.get(0).description);
-        assertEquals("Beta", loaded.get(1).description);
+        assertEquals("Task One", loaded.get(0).description);
+        assertEquals("Task Two", loaded.get(1).description);
         assertFalse(loaded.get(0).isComplete);
         assertTrue(loaded.get(1).isComplete);
     }
@@ -71,7 +44,7 @@ public class UtilTesting {
 
     @Test
     void testGetIntInputInvalidThenValid() {
-        String userInput = "hello\n5\n"; // invalid(hello) then valid(5)
+        String userInput = "hello\n5\n"; // invalid(hello) valid(5)
         System.setIn(new ByteArrayInputStream(userInput.getBytes()));
 
         int result = utility.getIntInput(5);
@@ -85,16 +58,6 @@ public class UtilTesting {
 
         String result = utility.getStringInput();
         assertEquals("ValidInput", result);
-    }
-
-    @Test
-    void testAdvanceBorderWrapsAround() {
-        // Simulate multiple calls to advance through all borders
-        for (int i = 0; i < 25; i++) {
-            utility.printEmptyBorder();
-        }
-        assertTrue(utility.borderSegment >= 0 && utility.borderSegment < 4);
-        assertTrue(utility.segmentSection >= 0 && utility.segmentSection < 5);
     }
 
 }

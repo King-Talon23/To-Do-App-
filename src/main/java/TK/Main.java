@@ -9,7 +9,6 @@ import static TK.utility.*;
 public class Main {
     public static boolean running = true;
     public static TaskList tasklist;
-
     static {
         try {
             tasklist = new TaskList();
@@ -18,21 +17,21 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
-        int maxInput = 3; // add/edit/delete
+    static Map<Integer, Runnable> inputMap = new HashMap<>(Map.of(
+            // maps all possible user input to actions
+            1, tasklist::add,
+            2, tasklist::edit,
+            3, tasklist::delete,
+            4, tasklist::removeCompleted,
+            99, Main::exit));
 
-        // map all possible user input to actions
-        Map<Integer, Runnable> inputMap = new HashMap<>(Map.of(
-                1, tasklist::add,
-                2, tasklist::edit,
-                3, tasklist::delete,
-                4, tasklist::removeCompleted,
-                99, Main::exit));
+    public static void main(String[] args) {
         printTop();
         printBordered("Welcome back, here's your tasks.");
         printEmptyBorder();
 
         while (running) {
+            int maxInput = 3; // add/edit/delete
             tasklist.displayTasks();
             printBordered("What would you like to do?");
             printBordered("1. Add a Task");
@@ -44,18 +43,17 @@ public class Main {
                 maxInput++;
                 printBordered("4. Remove ALL Completed Tasks");
             }
-
             printBordered("99. Save & Quit");
             printBottom();
 
-            inputMap.get(getIntInput(maxInput)).run(); // run the corresponding function based off user input
+            inputMap.get(getIntInput(maxInput)).run(); // run the matching function from user input map
         }
     }
 
-    private static void exit() {
+    public static void exit() {
         running = false;
-        utility.storeTasks(tasklist.currentTasks); // saves current tasks before quitting
-        printBordered("Tasks Saved!");
-        printBordered("Goodbye!");
+        storeTasks(tasklist.currentTasks); // saves current tasks before quitting
+        printBorderless("Tasks Saved!");
+        printBorderless("Goodbye!");
     }
 }

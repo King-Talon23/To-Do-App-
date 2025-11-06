@@ -1,72 +1,67 @@
 import TK.Task;
 import TK.TaskList;
-import TK.utility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static TK.utility.getIntInput;
-import static TK.utility.storeTasks;
 
 public class TasklistTesting {
-
-    private List<Task> mockTasks;
-    private TaskList taskList;
+    private TaskList tasklist;
 
     @BeforeEach
     void setUp() throws IOException {
-        // mock utility.loadTasks() to return a set list instead of making real I/O calls
-        mockTasks = new ArrayList<>();
-        mockTasks.add(new Task("Task A", false));
-        mockTasks.add(new Task("Task B", true));
-
-        try (MockedStatic<utility> mockedUtility = Mockito.mockStatic(utility.class)) {
-            mockedUtility.when(utility::loadTasks).thenReturn(mockTasks);
-            taskList = new TaskList();
-        }
+        tasklist = new TaskList();
+        tasklist.currentTasks.clear(); // remove all real tasks
+        tasklist.currentTasks.add(new Task("Task A", false));
+        tasklist.currentTasks.add(new Task("Task B", true));
     }
 
     @Test
-    void testConstructorLoadsTasks() {
+    void testLoadsTasksProperly() {
         // make sure tasks are loaded properly
-        assertEquals(2, taskList.currentTasks.size());
-        assertEquals("Task A", taskList.currentTasks.get(0).description);
+        assertEquals(2, tasklist.currentTasks.size());
+        assertEquals("Task A", tasklist.currentTasks.getFirst().description);
     }
 
     @Test
-    void testAnyCompleteReturnsTrueAccuratly() {
-        assertTrue(taskList.anyComplete());
+    void testAnyCompleteReturnsTrue() {
+        assertTrue(tasklist.anyComplete());
     }
 
     @Test
-    void testAnyCompleteReturnsFalseAccuratly() {
-        for (Task t : taskList.currentTasks) t.decomplete();
-        assertFalse(taskList.anyComplete());
+    void testAnyCompleteReturnsFalse() {
+        for (Task t : tasklist.currentTasks) t.uncomplete();
+        assertFalse(tasklist.anyComplete());
     }
 
     @Test
-    void testAddAndSave() {
-        try (MockedStatic<utility> mockedUtility = Mockito.mockStatic(utility.class)) {
-            mockedUtility.when(utility::loadTasks).thenReturn(mockTasks);
-            mockedUtility.when(utility::getStringInput).thenReturn("New Mock Task");
+    void testEdit() {
+        String simulatedInput = "1\n1\nI am a new Description!"; // new description
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+        tasklist.add();
 
-            taskList.add();
+        assertTrue(tasklist.currentTasks.stream() // see if it was changed
+                .anyMatch(t -> t.description.equals("I am a new Description!")));
+    }
 
-            // was the new task added?
-            assertTrue(taskList.currentTasks.stream()
-                    .anyMatch(t -> t.description.equals("New Mock Task")));
+    @Test
+    void testAddAndDelete() {
+        tasklist.currentTasks.clear();
+        String addTask = "I am a new Task\n";
+        System.setIn(new ByteArrayInputStream(addTask.getBytes()));
+        tasklist.add();
+        assertTrue(tasklist.currentTasks.stream() // see if it was added
+                .anyMatch(t -> t.description.equals("I am a new Task")));
 
-            // was new tasklist was saved?
-            mockedUtility.verify(() -> utility.storeTasks(any(List.class)));
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.getMessage());
-        }
+
+        String deleteTask = "1\n1\n";
+        System.setIn(new ByteArrayInputStream(deleteTask.getBytes()));
+        tasklist.delete();
+
+        assertTrue(tasklist.currentTasks.isEmpty());
     }
 }
+

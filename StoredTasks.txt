@@ -1,1 +1,4 @@
-[]: Test
+[]: i think therfore i task
+{X}: i am a task!
+[]: i am not a task!
+[]: am i a Task?

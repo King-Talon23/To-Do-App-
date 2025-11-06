@@ -10,19 +10,13 @@ public class TaskList {
 
     public TaskList() throws IOException {
         // load existing tasks on startup
-        this.currentTasks = utility.loadTasks();
+        this.currentTasks = utility.loadTasks(false);
     }
 
     public boolean anyComplete() {
         // check for at atleast one completed task
-        for (Task task : this.currentTasks) {
-            if (task.isComplete) {
-                return true;
-            }
-        }
-        return false;
+        return this.currentTasks.stream().anyMatch(x -> x.isComplete);
     }
-
     public void add() {
         printTop();
         printBordered("Please enter a description of your new task!");
@@ -30,7 +24,7 @@ public class TaskList {
         List<Task> newTaskList = this.currentTasks;
         Task newTask = new Task(getStringInput(), false);
         newTaskList.add(newTask);
-        utility.storeTasks(newTaskList); // save changes right after addition
+        storeTasks(newTaskList); // save changes
         printTop();
         printBordered("New Task Added!");
     }
@@ -50,7 +44,7 @@ public class TaskList {
             printTop();
             printBordered("What would you like to change?");
             printBordered("1. Edit Description");
-            printBordered("2. Mark " + (task.isComplete ? "Decomplete" : "Complete"));
+            printBordered("2. Mark " + (task.isComplete ? "Uncomplete" : "Complete")); // flip current status
             printBordered("99. Quit");
             printBottom();
 
@@ -63,7 +57,7 @@ public class TaskList {
                 case 2: {
                     // flip current completion status
                     if (task.isComplete) {
-                        task.decomplete();
+                        task.uncomplete();
                     } else {
                         task.complete();
                     }
@@ -93,7 +87,7 @@ public class TaskList {
             if (getIntInput(2) == 1) { // else: 2 == exit
                 List<Task> newTaskList = this.currentTasks;
                 newTaskList.remove(this.currentTasks.get(input - 1));
-                storeTasks(newTaskList); // save new tasklist
+                storeTasks(newTaskList);
                 printTop();
                 printBordered("Task Successfully Deleted!");
             }
@@ -112,10 +106,10 @@ public class TaskList {
         switch (getIntInput(2)) {
             case 1: {
                 List<Task> newTaskList = this.currentTasks;
-                newTaskList.removeIf(task -> task.isComplete); // removes all completed tasks from the list
-                // ^^^ my IDE suggested this function, idk if we need to state that when it shows us new functions
+                newTaskList.removeIf(task -> task.isComplete); // removes tasks if they are completed
+                //  ^^^ my IDE suggested this function, idk if we need to state that when it shows us new functions
 
-                utility.storeTasks(newTaskList); // save updated list
+                storeTasks(newTaskList);
                 printBorderless("Completed Tasks Successfully Deleted!");
             }
             case 2: {

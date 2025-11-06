@@ -2,61 +2,48 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import TK.Task;
-import TK.Task.*;
 
 public class TaskTesting {
 
-    private Task incompleteTask;
+    private Task uncompleteTask;
     private Task completeTask;
 
     @BeforeEach
     void setUp() {
         // testing objects
-        incompleteTask = new Task("Write CSD318 Essay", false);
+        uncompleteTask = new Task("Write CSD318 Essay", false);
         completeTask = new Task("Code To-Do App", true);
     }
 
     @Test
     void testCorrectlyInitializes() {
-        // Verifies correct initialization completed and incompleted tasks
-        assertEquals("Write report", incompleteTask.description);
-        assertFalse(incompleteTask.isComplete);
-        assertEquals("[]", incompleteTask.status);
+        // makes sure initialization testing tasks initialized properly
+        assertEquals("Write CSD318 Essay", uncompleteTask.description);
+        assertFalse(uncompleteTask.isComplete);
+        assertEquals("[]", uncompleteTask.status);
 
-        assertEquals("Submit project", completeTask.description);
+        assertEquals("Code To-Do App", completeTask.description);
         assertTrue(completeTask.isComplete);
         assertEquals("{X}", completeTask.status);
     }
 
     @Test
-    void testCompleteToIncomplete() {
-        // checks complete() works correctly
-        incompleteTask.complete();
-        assertTrue(incompleteTask.isComplete);
-        assertEquals("{X}", incompleteTask.status);
-    }
-
-    @Test
-    void testIncompleteToComplete() {
-        // checks decomplete() works correctly changes
-        completeTask.decomplete();
-        assertFalse(completeTask.isComplete);
-        assertEquals("[]", completeTask.status);
-    }
-
-    @Test
-    void testToStringReturnsFormat() {
-        // Verify string representation follows "status: description"
-        assertEquals("[]: Write CSD318 Essay", incompleteTask.toString());
+    void testToStringReturns() {
+        // check string representation follows "status: description"
+        assertEquals("[]: Write CSD318 Essay", uncompleteTask.toString());
         assertEquals("{X}: Code To-Do App", completeTask.toString());
     }
 
     @Test
-    void testStatusSymbolMappingConsistency() {
-        // Verify that status symbols match expected mapping logic
-        incompleteTask.complete();
-        assertEquals("{X}", incompleteTask.status);
-        incompleteTask.decomplete();
-        assertEquals("[]", incompleteTask.status);
+    void testStatusSymbolChanges() {
+        // check that status symbols changes correctly after complete/uncomplete()
+        uncompleteTask.complete();
+        assertEquals("{X}", uncompleteTask.status);
+        assertTrue(uncompleteTask.isComplete);
+
+        completeTask.uncomplete();
+        assertEquals("[]", completeTask.status);
+        assertFalse(completeTask.isComplete);
+
     }
 }

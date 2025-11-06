@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Task {
-    // Map completion state to visual status symbol for display
+    // Map isComplete to String status symbol
     Map<Boolean, String> completeToStatus = new HashMap<>(Map.of(false, "[]", true, "{X}"));
 
     public String status;
@@ -19,14 +19,14 @@ public class Task {
     }
 
     public void complete() {
-        // mark task as complete
+        // mark task as completed
         this.isComplete = true;
         this.status = completeToStatus.get(true);
 
     }
 
-    public void decomplete() {
-        // unmark task to uncomplete
+    public void uncomplete() {
+        // unmark task to uncompleted
         this.isComplete = false;
         this.status = completeToStatus.get(false);
 

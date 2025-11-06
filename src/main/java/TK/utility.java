@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.Scanner;
 
 public class utility {
-    // Track which border style and section are currently being used for display
+    // Track which border segment and section are currently being used for display
     public static int borderSegment = 0;
     public static int segmentSection = 0;
 
-    // Constants for spacing and alignment of borders and text
+    // constants for spacing of borders and text
     static int BORDER_CENTER_AMOUNT = 18;
     static int BORDER_TEXT_CENTER = 100;
     static int BORDERLESS_TEXT_CENTER = 136;
 
-    // border patterns used for In-Terminal UI
-    static String[][] border = {
+
+    static String[][] border = { // border for in-terminal ui
             {"/\\/\\", "/\\--/\\", "<|(>  <)|>", "\\/--\\/", "\\/\\/"},
             {"/  \\", "/ /\\ \\", "\\ \\/ /", "\\  /", "//\\\\"},
             {"/  \\", "/ /\\ \\", "(  ()  )", "\\ \\/ /", "\\  /"},
@@ -30,9 +30,7 @@ public class utility {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("StoredTasks.txt"))) {
             for (int i = 0; i < tasklist.size(); i++) {
                 writer.write(tasklist.get(i).toString());
-                if (i < (tasklist.size() - 1)) {
-                    writer.newLine();
-                }
+                if (i < (tasklist.size() - 1)) { writer.newLine(); }
             }
             writer.newLine();
         } catch (IOException e) {
@@ -40,10 +38,11 @@ public class utility {
         }
     }
 
-    public static List<Task> loadTasks() throws IOException {
+    public static List<Task> loadTasks(boolean isTest) throws IOException {
+        String filepath = isTest ? "StoredTasks_test.txt" : "StoredTasks.txt";
         // Loads tasks from file and reconstructs the list of Task objects
         List<Task> tasks = new ArrayList<>();
-        BufferedReader bf = new BufferedReader(new FileReader("StoredTasks.txt"));
+        BufferedReader bf = new BufferedReader(new FileReader(filepath));
         String line;
 
         while ((line = bf.readLine()) != null) {
@@ -77,7 +76,7 @@ public class utility {
     }
 
     public static String getStringInput() {
-        // Ensures user enters a non-empty string
+        // Accepts any non-empty string from the user
         Scanner sc = new Scanner(System.in);
         String input;
         do {
@@ -87,9 +86,11 @@ public class utility {
         return input;
     }
 
-    // Printing / UI STUFF
+
+
+    // Printing / Ui Stuff
     public static void printTop(){
-        // prints the top/begining part of the UI border
+        // prints the top/beginning part of the border
         String sectionOne = centerText("/\\", BORDER_CENTER_AMOUNT);
         String sectionTwo = centerText("\\  /", BORDER_CENTER_AMOUNT);
         System.out.println(sectionOne + centerText("", BORDER_TEXT_CENTER) + sectionOne);
@@ -97,15 +98,13 @@ public class utility {
         printFull();
     }
     public static void printBottom(){
-        // prints the bottom/end part of the UI border
+        // prints the bottom/end part of the border
         printFull();
         String sectionOne = centerText("/  \\", BORDER_CENTER_AMOUNT);
         String sectionTwo = centerText("\\/", BORDER_CENTER_AMOUNT);
         System.out.println(sectionOne + centerText("", BORDER_TEXT_CENTER) + sectionOne);
         System.out.println(sectionTwo + centerText("", BORDER_TEXT_CENTER) + sectionTwo);
     }
-
-
 
 
     public static void printBordered(String text) {
