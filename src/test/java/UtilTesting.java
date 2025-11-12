@@ -1,3 +1,4 @@
+import TK.Status;
 import TK.Task;
 import TK.utility;
 import org.junit.jupiter.api.*;
@@ -14,8 +15,8 @@ public class UtilTesting {
     @Test
     void testStoreAndLoadTasks() throws IOException {
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new Task("Task One", false));
-        tasks.add(new Task("Task Two", true));
+        tasks.add(new Task("Task One", Status.Uncompleted));
+        tasks.add(new Task("Task Two", Status.Completed));
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("StoredTasks_test.txt"))) {
             for (Task t : tasks) {
@@ -29,8 +30,8 @@ public class UtilTesting {
         assertEquals(2, loaded.size());
         assertEquals("Task One", loaded.get(0).description);
         assertEquals("Task Two", loaded.get(1).description);
-        assertFalse(loaded.get(0).isComplete);
-        assertTrue(loaded.get(1).isComplete);
+        assertFalse(loaded.get(0).isComplete());
+        assertTrue(loaded.get(1).isComplete());
     }
 
     @Test

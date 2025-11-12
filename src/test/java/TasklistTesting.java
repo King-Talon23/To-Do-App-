@@ -1,3 +1,4 @@
+import TK.Status;
 import TK.Task;
 import TK.TaskList;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +17,8 @@ public class TasklistTesting {
     void setUp() throws IOException {
         tasklist = new TaskList();
         tasklist.currentTasks.clear(); // remove all real tasks
-        tasklist.currentTasks.add(new Task("Task A", false));
-        tasklist.currentTasks.add(new Task("Task B", true));
+        tasklist.currentTasks.add(new Task("Task A", Status.Uncompleted));
+        tasklist.currentTasks.add(new Task("Task B", Status.Completed));
     }
 
     @Test
@@ -51,7 +52,7 @@ public class TasklistTesting {
     @Test
     void testDelete() {
         tasklist.currentTasks.clear();
-        tasklist.currentTasks.add(new Task("please delete", true));
+        tasklist.currentTasks.add(new Task("please delete", Status.Completed));
         System.setIn(new ByteArrayInputStream("1\n1\n".getBytes()));
         TK.utility.sc = new Scanner(System.in);
 

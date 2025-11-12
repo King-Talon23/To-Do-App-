@@ -2,6 +2,7 @@ package TK;
 
 import java.io.IOException;
 import java.util.List;
+import TK.Status.*;
 
 import static TK.utility.*;
 
@@ -15,8 +16,9 @@ public class TaskList {
 
     public boolean anyComplete() {
         // checks for at least one completed task
-        return this.currentTasks.stream().anyMatch(x -> x.isComplete);
+        return this.currentTasks.stream().anyMatch(Task::isComplete);
     }
+
     public void add() {
         /*
          prompts the user to enter a String for a new Task description,
@@ -27,7 +29,7 @@ public class TaskList {
         printBordered("Please enter a description of your new task!");
         printBottom();
         List<Task> newTaskList = this.currentTasks;
-        Task newTask = new Task(getStringInput(), false);
+        Task newTask = new Task(getStringInput(), Status.Uncompleted); // new tasks are always uncompleted
         newTaskList.add(newTask);
         storeTasks(newTaskList); // save changes
         printTop();
@@ -55,7 +57,7 @@ public class TaskList {
             printTop();
             printBordered("What would you like to change?");
             printBordered("1. Edit Description");
-            printBordered("2. Mark " + (task.isComplete ? "Uncomplete" : "Complete")); // flip current status
+            printBordered("2. Mark " + (task.isComplete() ? "Uncomplete" : "Complete")); // flip current status
             printBordered("99. Quit");
             printBottom();
 
@@ -67,10 +69,10 @@ public class TaskList {
                 }
                 case 2: {
                     // flip current completion status
-                    if (task.isComplete) {
-                        task.uncomplete();
+                    if (task.isComplete()) {
+                        task.status = Status.Uncompleted;
                     } else {
-                        task.complete();
+                        task.status = Status.Completed;
                     }
                 }
                 default:
@@ -126,7 +128,7 @@ public class TaskList {
         switch (getIntInput(2)) {
             case 1: {
                 List<Task> newTaskList = this.currentTasks;
-                newTaskList.removeIf(task -> task.isComplete); // removes tasks if they are completed
+                newTaskList.removeIf(Task::isComplete); // removes tasks if they are completed
                 //  ^^^ my IDE suggested this function, idk if we need to state that when it shows us new functions
 
                 storeTasks(newTaskList);

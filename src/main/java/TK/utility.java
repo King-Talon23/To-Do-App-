@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import TK.Status.*;
 
 public class utility {
     // Track which border segment and section are currently being used for display
@@ -30,9 +31,9 @@ public class utility {
     public static void storeTasks(List<Task> tasklist) {
         // Writes a list of tasks to a text file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("StoredTasks.txt"))) {
-            for (int i = 0; i < tasklist.size(); i++) {
-                writer.write(tasklist.get(i).toString());
-                if (i < (tasklist.size() - 1)) { writer.newLine(); }
+            for (Task task : tasklist) {
+                writer.write(task.toString());
+                if (task != tasklist.getLast()) { writer.newLine(); }
             }
             writer.newLine();
         } catch (IOException e) {
@@ -51,7 +52,11 @@ public class utility {
             String[] splitTasks = line.split(": ");
             if (splitTasks.length == 2) {
                 String name = splitTasks[1].trim();
-                tasks.add(new Task(name, splitTasks[0].trim().equals("{X}")));
+                if (splitTasks[0].trim().equals("{X}")) {
+                    tasks.add(new Task(name, Status.Completed));
+                } else {
+                    tasks.add(new Task(name, Status.Uncompleted));
+                }
             }
         }
         bf.close();
